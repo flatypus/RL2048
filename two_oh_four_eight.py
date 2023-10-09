@@ -155,7 +155,7 @@ class Game:
         return [1 if x == 2 **
                 i else 0 for i in range(max_exponent)]
 
-    def _conform_to_output(self):
+    def get_state(self):
         max_exponent = 13  # 2^13 = 8192
         grid = np.reshape(self.grid.cells, -1)
         grid = [x.value if x else 0 for x in grid]
@@ -178,7 +178,7 @@ class Game:
         self.repeated_moves = 0
         self._add_random_tile()
         self._add_random_tile()
-        return self._conform_to_output()
+        return self.get_state()
 
     def step(self, action):
         # action: 0, 1, 2, 3
@@ -238,7 +238,7 @@ class Game:
             self.stats()
             self.done = True
 
-        return self._conform_to_output(), change_in_score if moved else -8, self.done
+        return change_in_score if moved else -8, self.done, self.score
 
     def render(self):
         for row in self.grid.cells:
