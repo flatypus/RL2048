@@ -188,6 +188,7 @@ class Game:
         traversals_x, traversals_y = self._build_traversals(*vector)
         moved = False
         change_in_score = 0
+        moved_cells = 0
         self.moves += 1
 
         self._prepare_tiles()
@@ -214,7 +215,7 @@ class Game:
                         tile.update_position(*next_position)
 
                         self.score += merged.value
-                        change_in_score += merged.value
+                        change_in_score += np.log2(merged.value)
 
                         if self.score >= self.max_score:
                             print("You win! Max score reached!")
@@ -223,6 +224,7 @@ class Game:
                     else:
                         self.grid.move_tile(tile, *farthest)
                     if not self._positions_equal([tile.x, tile.y], tile.previousPosition):
+                        moved_cells += 1
                         moved = True
         if moved:
             self._add_random_tile()
@@ -238,7 +240,7 @@ class Game:
             self.stats()
             self.done = True
 
-        return change_in_score if moved else -8, self.done, self.score
+        return change_in_score - moved_cells if moved else -10, self.done, self.score
 
     def render(self):
         for row in self.grid.cells:
